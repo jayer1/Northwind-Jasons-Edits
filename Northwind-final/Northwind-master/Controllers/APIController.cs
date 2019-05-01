@@ -41,9 +41,11 @@ namespace Northwind.Controllers
         // returns list of all orders not shipped
         public IEnumerable<Order> GetOrdersNotShippedYet() => repository.Orders.Where(o => o.ShippedDate == null).OrderBy(o => o.OrderDate);
 
-        [HttpGet, Route("api/order/pastRequired/{pastRequired}")] //?
+        [HttpGet, Route("api/order")] //?
         // returns list of all orders not shipped
-        public IEnumerable<Order>GetOrders() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate > DateTime.Now).OrderBy(o => o.RequiredDate);
+        //public IEnumerable<Order>GetOrders() => repository.Orders.OrderBy(o => o.RequiredDate);
+        //public IEnumerable<Order> GetOrders() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate <= (DateTime.Now.AddDays(7))).OrderBy(o => o.RequiredDate);
+        public IEnumerable<Order> GetOrders() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate <= DateTime.Now).OrderBy(o => o.RequiredDate);
 
         //FIX THIS TO BE REQUIRED WEEK
         [HttpGet, Route("api/order/requiredsoon")] 

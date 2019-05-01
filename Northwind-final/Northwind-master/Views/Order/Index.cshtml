@@ -1,0 +1,72 @@
+﻿@using Northwind.Models
+@model IEnumerable<Order>
+
+<br />
+<label for="pastRequired">Past Required</label>
+<input type="checkbox" />
+<br />
+<div class="btn-group" id="Options" name="Options" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-secondary" id="pastRequired" name="pastRequired">Past Required Date</button>
+    <button type="button" class="btn btn-secondary" id="notShippedNull" name="notShippedNull">Shipped</button>
+    <button type="button" class="btn btn-secondary">Required Today</button>
+</div>
+<br />
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Order ID</th>
+            <th scope="col" class="text-right">Order Date</th>
+            <th scope="col" class="text-right">Shipped Date</th>
+            <th scope="col" class="text-right">Required Date</th>
+        </tr>
+    </thead>
+    <tbody id="order_table" data-id="@ViewBag.id"></tbody>
+</table>
+<a class="navbar-brand" asp-controller="Order" asp-action="Next"><i class="far fa-compass"></i> Next</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+@section scripts
+    {
+    <script>
+        // Turn off ESLint (Windows): Tools - Options - Text Editor - Javascript - Linting
+        $(function () {
+            $('#pastRequired').on('click', function () {
+                //alert("HI");
+                getOrdersShippedDateNull();
+            });
+
+        
+
+            //getOrders()
+            function getOrdersShippedDateNull() {
+                var id = $('#order_table').data('id');
+                //alert("HI2");
+                $.getJSON({
+                    url: "../../api/order", // This is how you bring in the JSON request (how to filter)
+                    data: {
+                        shipVia: 3,
+                    },
+                    success: function (response, textStatus, jqXhr) {
+                        console.log(response);
+                        $('#order_table').html("");
+                        for (var i = 0; i < response.length; i++) {
+                            var row = "<tr>"
+                                + "<td>" + response[i].orderID + "</td>"
+                                + "<td class=\"text-right\">" + response[i].orderDate + "</td>"
+                                + "<td class=\"text-right\">" + response[i].shippedDate + "</td>"
+                                + "<td class=\"text-right\">" + response[i].requiredDate + "</td>"
+                                + "</tr>";
+                            $('#order_table').append(row);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // log the error to the console
+                        console.log("The following error occured: " + textStatus, errorThrown);
+                    }
+                });
+                }
+        });</script>
+}
+

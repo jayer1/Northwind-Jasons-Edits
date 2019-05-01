@@ -40,18 +40,19 @@ namespace Northwind.Controllers
 
         }*/
 
-        /*[Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
         public IActionResult Index(int id)
         {
             ViewBag.id = id;
             return View();
-        }*/
-
+        }
+        /*[Authorize(Roles = "Employee")]
         public ActionResult Index()
         {
-            return View(repository.Orders.Where(o=>o.ShippedDate == null && o.RequiredDate< DateTime.Now).OrderBy(o => o.RequiredDate));
+            return View(repository.Orders.OrderBy(o => o.RequiredDate));
+            //return View(repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate < DateTime.Now).OrderBy(o => o.RequiredDate));
         }
-
+        */
         public IActionResult OrderDetail(int id) => View(repository.OrderDetails.FirstOrDefault(od => od.OrderID == id));
 
         //public ActionResult Index() => View(repository.Orders.Where(o => o.ShippedDate != null && o.RequiredDate < DateTime.Now).OrderBy(o => o.RequiredDate).Skip(5).Take(5));
