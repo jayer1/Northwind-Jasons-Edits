@@ -41,21 +41,50 @@ namespace Northwind.Controllers
         // returns list of all orders not shipped
         public IEnumerable<Order> GetOrdersNotShippedYet() => repository.Orders.Where(o => o.ShippedDate == null).OrderBy(o => o.OrderDate);
 
+        //[HttpGet, Route("api/order")] //?
+        // returns list of all orders not shipped
+        //public IEnumerable<Order>GetOrders() => repository.Orders.OrderBy(o => o.RequiredDate);
+        //public IEnumerable<Order> GetOrders() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate <= (DateTime.Now.AddDays(7))).OrderBy(o => o.RequiredDate);
+        //public IEnumerable<Order> GetOrders() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate <= DateTime.Now).OrderBy(o => o.RequiredDate);
+
         [HttpGet, Route("api/order")] //?
         // returns list of all orders not shipped
         //public IEnumerable<Order>GetOrders() => repository.Orders.OrderBy(o => o.RequiredDate);
         //public IEnumerable<Order> GetOrders() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate <= (DateTime.Now.AddDays(7))).OrderBy(o => o.RequiredDate);
-        public IEnumerable<Order> GetOrders() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate <= DateTime.Now).OrderBy(o => o.RequiredDate);
+        public IEnumerable<Order> GetOrders() => repository.Orders.OrderBy(o => o.RequiredDate);
+
+        [HttpGet, Route("api/order/take/{num}")] //?
+        // returns list of all orders not shipped
+        //public IEnumerable<Order>GetOrders() => repository.Orders.OrderBy(o => o.RequiredDate);
+        //public IEnumerable<Order> GetOrders() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate <= (DateTime.Now.AddDays(7))).OrderBy(o => o.RequiredDate);
+        public IEnumerable<Order> GetOrdersTakeX(int num) => repository.Orders.Take(num).OrderBy(o => o.RequiredDate);
 
         //FIX THIS TO BE REQUIRED WEEK
-        [HttpGet, Route("api/order/requiredsoon")] 
+        //[HttpGet, Route("api/order/required/{num1}")] 
         // returns list of all orders ordered by shipped date required in a week ??
-        public IEnumerable<Order> GetOrdersRequiredSoon() => repository.Orders.Where(o => o.ShippedDate == null).Where(o => o.RequiredDate >= DateTime.Now.AddDays(-7)).OrderBy(o => o.OrderDate);
+        //public IEnumerable<Order> GetOrdersRequiredSoon(int num1) => repository.Orders.Where(o => o.ShippedDate == null).Where(o => o.RequiredDate <= DateTime.Now.AddDays(num1) && o.RequiredDate >= DateTime.Now).OrderBy(o => o.OrderDate);
 
 
-        [HttpGet, Route("api/order/requiredtoday")] 
+        [HttpGet, Route("api/order/required/{num1}")]
+        // returns list of all orders ordered by shipped date required in a week ??
+        public IEnumerable<Order> GetOrdersRequiredSoon2(int num1) => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate <= DateTime.Now.AddDays(num1) && o.RequiredDate >= DateTime.Now.Date).OrderBy(o => o.OrderDate);
+
+
+        [HttpGet, Route("api/order/requiredtoday")]
+        // returns list of all orders ordered by shipped date required in a week ??
+        public IEnumerable<Order> GetOrdersRequiredSoon() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate == DateTime.Today).OrderBy(o => o.OrderDate);
+
+        [HttpGet, Route("api/order/required/overdue")]
+        // returns list of orders overdue (past required date)
+        public IEnumerable<Order> GetOrdersOverdue() => repository.Orders.Where(o => o.ShippedDate == null && o.RequiredDate < DateTime.Today).OrderBy(o => o.OrderDate);
+
+        /*[HttpGet, Route("api/order/required/{num1}")]
+        // returns list of all orders ordered by shipped date required in a week ??
+        public IEnumerable<Order> GetOrdersPastRequired(int num1) => repository.Orders.Where(o => o.ShippedDate == null).Where(o => o.RequiredDate >= DateTime.Now.AddDays(num1)).OrderBy(o => o.OrderDate);
+        */
+        //[HttpGet, Route("api/order/required/{num2}")] 
         // returns list of all orders ordered by shipped date required today
-        public IEnumerable<Order> GetOrdersRequiredToday() => repository.Orders.Where(o => o.ShippedDate == null).Where(o => o.RequiredDate == DateTime.Now).OrderBy(o => o.OrderDate);
+        //public IEnumerable<Order> GetOrdersRequiredToday(int num2) => repository.Orders.Where(o => o.ShippedDate == null).Where(o => o.RequiredDate == DateTime.Now.w.AddDays(num1)).OrderBy(o => o.OrderDate);
 
 
 

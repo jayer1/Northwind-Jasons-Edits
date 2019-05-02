@@ -1,0 +1,166 @@
+﻿@using Northwind.Models
+@model IEnumerable<Order>
+
+<div class="btn-group" id="Options" name="Options" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-secondary" id="requiredNext7" name="requiredNext7">Required Next 7 Days</button>
+    <button type="button" class="btn btn-secondary" id="requiredToday" name="requiredToday">Required Today</button>
+    <button type="button" class="btn btn-secondary" id="overdue" name="overdue">Overdue</button>
+</div>
+<br />
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Order ID</th>
+            <th scope="col" class="text-center">Customer</th>
+            <th scope="col" class="text-center">Order Date</th>
+            <th scope="col" class="text-center">Shipped Date</th>
+            <th scope="col" class="text-center">Required Date</th>
+        </tr>
+    </thead>
+    <tbody id="order_table" data-id="@ViewBag.id"></tbody>
+</table>
+<a class="navbar-brand" asp-controller="Order" asp-action="Next"><i class="far fa-compass"></i> Next</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+@section scripts
+    {
+    <script>
+        var days = "";
+        // Turn off ESLint (Windows): Tools - Options - Text Editor - Javascript - Linting
+        
+        $(function () {
+            getAllOrders();
+
+            $('#requiredNext7').on('click', function () {
+                days = "7";
+                getOrdersNext7();
+            });
+
+
+            $('#requiredToday').on('click', function () {
+                //days = "0";
+                getOrders();
+
+            });
+
+            $('#pastDue').on('click', function () {
+                //days = "0";
+                getOrdersPastDue();
+
+            });
+
+            $('#overdue').on('click', function () {
+                url = "overdue";
+                getOrdersPastDue();
+            });
+
+
+                //getOrders()
+        function getOrdersNext7() {
+            var id = $('#order_table').data('id');
+            $.getJSON({
+                url: "../../api/order/required/" + days, // This is how you bring in the JSON request (how to filter)
+                success: function (response, textStatus, jqXhr) {
+                    console.log(response);
+                    $('#order_table').html("");
+                    for (var i = 0; i < response.length; i++) {
+                        var row = "<tr>"
+                            + "<td>" + response[i].orderID + "</td>"
+                            + "<td class=\"text-center\">" + response[i].shipName + "</td>"
+                            + "<td class=\"text-center\">" + (response[i].orderDate).substring(0, 10) + "</td>"
+                            + "<td class=\"text-center\">" + ((response[i].shippedDate == null) ? "Not yet shipped" : response[i].shippedDate) + "</td>"
+                            + "<td class=\"text-center\">" + (response[i].requiredDate).substring(0, 10) + "</td>"
+                            
+                            + "</tr>";
+                        $('#order_table').append(row);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    // log the error to the console
+                    console.log("The following error occured: " + textStatus, errorThrown);
+                }
+            });
+        }
+
+                function getOrders() {
+                    var id = $('#order_table').data('id');
+                    $.getJSON({
+                        url: "../../api/order/requiredtoday", // This is how you bring in the JSON request (how to filter)
+                        success: function (response, textStatus, jqXhr) {
+                            console.log(response);
+                            $('#order_table').html("");
+                            for (var i = 0; i < response.length; i++) {
+                                var row = "<tr>"
+                                    + "<td>" + response[i].orderID + "</td>"
+                                    + "<td class=\"text-center\">" + response[i].shipName + "</td>"
+                                    + "<td class=\"text-center\">" + (response[i].orderDate).substring(0, 10) + "</td>"
+                                    + "<td class=\"text-center\">" + ((response[i].shippedDate == null) ? "Not yet shipped" : response[i].shippedDate) + "</td>"
+                                    + "<td class=\"text-center\">" + (response[i].requiredDate).substring(0, 10) + "</td>"
+                                    
+                                    + "</tr>";
+                                $('#order_table').append(row);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            // log the error to the console
+                            console.log("The following error occured: " + textStatus, errorThrown);
+                        }
+                    });
+                }
+
+                function getOrdersPastDue() {
+                    var id = $('#order_table').data('id');
+                    $.getJSON({
+                        url: "../../api/order/required/overdue", // This is how you bring in the JSON request (how to filter)
+                        success: function (response, textStatus, jqXhr) {
+                            console.log(response);
+                            $('#order_table').html("");
+                            for (var i = 0; i < response.length; i++) {
+                                //var myOrderDate = (response[i].orderDate).substring(0, 9);
+                                var row = "<tr>"
+                                    + "<td>" + response[i].orderID + "</td>"
+                                    + "<td class=\"text-center\">" + response[i].shipName + "</td>"
+                                    + "<td class=\"text-center\">" + (response[i].orderDate).substring(0, 10) + "</td>"
+                                    + "<td class=\"text-center\">" + ((response[i].shippedDate == null) ? "Not yet shipped" : response[i].shippedDate) + "</td>"
+                                    + "<td class=\"text-center\">" + (response[i].requiredDate).substring(0, 10) + "</td>"
+                                    
+                                    + "</tr>";
+                                $('#order_table').append(row);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            // log the error to the console
+                            console.log("The following error occured: " + textStatus, errorThrown);
+                        }
+                    });
+            }
+
+            function getAllOrders() {
+                var id = $('#order_table').data('id');
+                $.getJSON({
+                    url: "../../api/order", // This is how you bring in the JSON request (how to filter)
+                    success: function (response, textStatus, jqXhr) {
+                        console.log(response);
+                        $('#order_table').html("");
+                        for (var i = 0; i < response.length; i++) {
+                            var row = "<tr>"
+                                + "<td>" + response[i].orderID + "</td>"
+                                + "<td class=\"text-center\">" + response[i].shipName + "</td>"
+                                + "<td class=\"text-center\">" + (response[i].orderDate).substring(0, 10) + "</td>"
+                                + "<td class=\"text-center\">" + ((response[i].shippedDate == null) ? "Not yet shipped" : response[i].shippedDate.substring(0, 10)) + "</td>"
+                                + "<td class=\"text-center\">" + (response[i].orderDate).substring(0, 10) + "</td>"
+                                + "</tr>";
+                            $('#order_table').append(row);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // log the error to the console
+                        console.log("The following error occured: " + textStatus, errorThrown);
+                    }
+                });
+            }
+        });</script>
+}
+
